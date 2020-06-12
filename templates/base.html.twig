@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        
+        <title>{% block title %}Station méteo{% endblock %}</title>
+        <link rel="icon" href="{{asset('assets/img/sun.png')}}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet"> 
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body style="background-image:url('{{ asset('assets/img/background.png')}}'); background-size: cover;">
+        <div class="d-flex justify-content-center col-sm-12">
+            <img src="{{ asset('assets/img/stationmeteo.png')}}" alt="site-logo" class="img-fluid logo">
+        </div>
+
+        {% block body %}{% endblock %}
+            <script src="{{asset('assets/js/jquery-3.5.1.js')}}"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+            <script>
+                $(document).ready(function(){
+
+                    $(window).keydown(function(event){
+                        if(event.keyCode == 13) {
+                        event.preventDefault();
+                        return false;
+                        }
+                    });//Contrôle comportement touche 'return' pour la soumission de l'input
+                    
+                    $('#submit').on('click', function(event) {
+                        event.preventDefault();
+                        let city = $("#search").val();
+                        let url = window.location.href + city;
+                    
+                        if(city.match(/^[a-zA-Z\u0080-\u024F]+(?:([\ \-\']|(\.\ ))[a-zA-Z\u0080-\u024F]+)*$/)){     
+                        
+                            $.ajax({
+                                method: 'GET',
+                                url: url,
+                                dataType: 'json',
+                                success:function(response){	
+                                    let city = response.city;       
+                                    let description = response.description; 
+                                    description = description.charAt(0).toUpperCase() + description.slice(1)      
+                                    let temp = response.temp;  
+                                    let path = response.path;
+                                    let deg = response.deg;
+                                    let wind = response.wind;
+                                    $('#city').html(city);
+                                    $('#description').html(description);
+                                    $('#temp').html(temp);
+                                    $('#wind').html(wind);
+                                    $("#path").attr("src",path);
+                                    $('#arrow').css('transform', 'rotate(' + deg + 'deg)');
+
+
+                                },
+                                error:function(xhr,status,error){
+                                    Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Oups...',
+                                    text: 'Ville non trouvée.',
+                                    confirmButtonColor: '#34465f',
+                                    })
+                                }
+                            });//Fermeture Ajax
+                            
+
+
+                        }//Fermeture if regular expression verification si reception de données
+                        else{
+                            Swal.fire({
+                            icon: 'error',
+                            title: 'Oups...',
+                            text: 'Il se peut que ça soit l\'orthographe, try again !',
+                            confirmButtonColor: '#34465f',
+                            })
+                        };//Fermeture else verification orthographe
+
+                    });//Fermeture submit
+                });//Fermeture document ready
+
+            </script>
+            
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

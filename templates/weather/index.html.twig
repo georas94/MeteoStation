@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-sm-12 col-12">
+
+            <div class="d-flex flex-column align-items-center mt-4">
+                <div class="text-center">
+                    <div class="city" id="city">{{city}}</div>
+                    <div class="description" id="description">{{description}}</div>
+                    <img src="{{path}}" alt="weather-picture" id="path" class="img-fluid">
+                    <div class="temp" id="temp">{{temp}}</div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-12">
+                <div class="wind d-flex align-items-baseline justify-content-center">
+                    <p>Le vent souffle à &nbsp; <div class="wind" id="wind">{{wind}}</div> &nbsp; Km/h</p>
+                </div>
+
+                <div class="d-flex flex-column align-items-center">
+                    <img id="arrow" src="{{asset('assets/img/arrow.png')}}" alt="arrow-wind-direction" value="{{deg}}">
+                    <small class="direction">Direction du vent</small>
+                    <input type="hidden" name="action" id="hidden" value="showWeather">
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-sm-12 col-12">
+            <form method="POST" class="d-flex flex-column align-items-center mt-5" id="poste">
+
+                <label for="search">Recherche</label>
+                <input type="text" name="search" id="search" value="{{city}}" class="form-control w-50">
+                <a type="button" id="submit" name="submit" class="btn btn-success mt-2 rounded-pill"
+                    href="{{path('show_weather', {'city': city})}}">Afficher</a>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
